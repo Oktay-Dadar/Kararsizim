@@ -1,0 +1,3 @@
+
+Claude ilk soru
+bir web projesi yapiyoruz. tüm detaylari docs dizindeki md dosyasına yazdık. buradaki dosyayı incele. Kod yazmadan once bana netleştirmek istediğin bir yer varsa sor. planlamaya ondan sonra başlarız.
