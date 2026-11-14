@@ -22,6 +22,7 @@
 
   /* durum */
   --danger:     #E5484D;
+  --danger-text: #C62A2F; /* hata metni: --danger beyaz zeminde 4.5:1 kontrastı tutmuyor */
 
   /* gölge: griye değil, mora çalar */
   --shadow-sm: 0 2px 8px rgba(91, 61, 245, 0.08);

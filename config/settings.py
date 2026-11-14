@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
@@ -82,6 +83,9 @@ if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
     db_options.setdefault("sslmode", "require")
 
 AUTH_USER_MODEL = "accounts.User"
+LOGIN_URL = "/giris/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
@@ -106,6 +110,14 @@ STORAGES = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Tests never touch Supabase; see docs/PROJECT.md §15.
+TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
+if TESTING:
+    DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
+    STORAGES["staticfiles"] = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}
+    PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+    WHITENOISE_AUTOREFRESH = True
 
 MAILERS = {
     "default": {

@@ -7,10 +7,14 @@
   <meta name="description" content="Sen sor, kalabalık karar versin.">
   <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <script src="{% static 'js/toast.js' %}" defer></script>
 </head>
 <body>
+  {% include "partials/header.html" %}
   <main>
     {% block content %}{% endblock %}
   </main>
+  {% include "partials/toast.html" %}
 </body>
 </html>

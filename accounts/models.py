@@ -11,6 +11,9 @@ class UserManager(DjangoUserManager):
     def normalize_email(cls, email):
         return (email or "").strip().lower()
 
+    def get_by_natural_key(self, username):
+        return self.get(username__iexact=username)
+
 
 class User(AbstractUser):
     username = models.CharField(
