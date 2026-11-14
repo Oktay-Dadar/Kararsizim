@@ -1,0 +1,6 @@
+Notes/
+docs/
+.idea/
+.claude/
+db.sqlite3
+staticfiles/
