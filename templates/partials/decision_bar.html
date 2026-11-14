@@ -1,0 +1,4 @@
+<div class="decision-bar{% if not view.real_bar %} decision-bar--neutral{% endif %}" role="img" aria-label="{{ view.bar_label }}">
+  {% for segment in view.segments %}<span class="decision-bar__segment opt-{{ segment.position }}" style="flex-grow: {{ segment.weight }}"></span>{% endfor %}
+</div>
+<p class="badge badge--{{ view.badge_kind }}">{{ view.badge_text }}</p>

@@ -1,0 +1,8 @@
+{% load humanize %}<p class="poll-meta">
+  <a class="poll-meta__author" href="{% url 'polls:profile' view.poll.author.username %}">@{{ view.poll.author.username }}</a>
+  <span aria-hidden="true">·</span>
+  <time datetime="{{ view.poll.created_at|date:'c' }}">{{ view.poll.created_at|naturaltime }}</time>
+  <span aria-hidden="true">·</span>
+  <span>{% if view.poll.total_votes %}{{ view.poll.total_votes|intcomma }} kişi oy verdi{% else %}Henüz oy yok{% endif %}</span>
+  {% if not view.poll.is_open %}<span class="poll-meta__status">Kapandı</span>{% endif %}
+</p>

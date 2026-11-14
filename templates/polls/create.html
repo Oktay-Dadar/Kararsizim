@@ -1,10 +1,38 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Anket oluştur · Kararsızım{% endblock %}
 
 {% block content %}
-  <section class="auth-card">
-    <h1 class="auth-card__title">Anket oluştur</h1>
-    <p class="auth-card__lead">Anket formu çok yakında burada.</p>
+  <section class="form-card">
+    <h1 class="form-card__title">Anket oluştur</h1>
+    {% if limit_reached %}
+      <div class="notice notice--error">24 saatte en fazla 10 anket açabilirsin. Biraz sonra tekrar dene.</div>
+    {% endif %}
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% include "partials/form_errors.html" %}
+      {% with field=form.question %}{% include "partials/form_field.html" %}{% endwith %}
+      {% with field=form.description %}{% include "partials/form_field.html" %}{% endwith %}
+
+      <fieldset class="option-fieldset{% if form.options.errors %} field--error{% endif %}" data-poll-options>
+        <legend class="field__label">Seçenekler</legend>
+        <p class="field__help">En az 2, en fazla 5 seçenek; her biri en fazla 80 karakter.</p>
+        {% for value in form.option_values %}
+          <div class="option-input opt-{{ forloop.counter0 }}" data-option-row>
+            <label class="option-input__label" for="option-{{ forloop.counter }}">{{ forloop.counter }}. seçenek{% if forloop.counter > 2 %} (isteğe bağlı){% endif %}</label>
+            <div class="option-input__row">
+              <input id="option-{{ forloop.counter }}" name="options" type="text" maxlength="80" value="{{ value }}" autocomplete="off">
+              <button class="btn btn-secondary option-input__remove" type="button" data-remove-option aria-label="{{ forloop.counter }}. seçeneği kaldır" hidden>Kaldır</button>
+            </div>
+          </div>
+        {% endfor %}
+        {% for error in form.options.errors %}<p class="field__error">{{ error }}</p>{% endfor %}
+        <button class="btn btn-secondary" type="button" data-add-option hidden>Seçenek ekle</button>
+      </fieldset>
+
+      <button class="btn btn-primary btn-block" type="submit">Anket oluştur</button>
+    </form>
   </section>
+  <script src="{% static 'js/poll-form.js' %}" defer></script>
 {% endblock %}

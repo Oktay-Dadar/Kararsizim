@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Kararsızım</h1>
-  <p>Sen sor, kalabalık karar versin.</p>
+  <h1 class="page-title">Sen sor, kalabalık karar versin.</h1>
+
+  <nav class="tabs" aria-label="Anket akışı">
+    {% for key, label in tabs %}
+      <a class="tabs__item" href="?sekme={{ key }}"{% if key == tab %} aria-current="page"{% endif %}>{{ label }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if tab == "populer" %}
+    {% include "partials/poll_list.html" with empty_message="Son 7 günde oy alan anket yok." %}
+  {% elif tab == "kapananlar" %}
+    {% include "partials/poll_list.html" with empty_message="Henüz kapanan anket yok." %}
+  {% else %}
+    {% include "partials/poll_list.html" with empty_message="Henüz anket yok. İlk kararsızlığını sen paylaş." empty_cta=True %}
+  {% endif %}
 {% endblock %}

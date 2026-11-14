@@ -673,3 +673,8 @@ Kodlamaya başlamadan önce netleştirildi. Yukarıdaki bölümlerle çeliştiğ
 | 17 | Test veritabanı | `manage.py test` her zaman bellekte SQLite kullanır (`config/settings.py` → `TESTING`), Supabase'e dokunmaz. Postgres'e özgü davranışlar (Faz 4 eşzamanlı oy) ayrıca Supabase'de elle denenir. |
 | 18 | `--danger-text` token'ı | `--danger` (#E5484D) beyaz zeminde 3.9:1 kontrast veriyor; hata **metni** için `tokens.css`'e `--danger-text: #C62A2F` (5.5:1) eklendi. `--danger` kenarlık ve zemin tonlarında kullanılmaya devam eder. |
 | 19 | Geçici oluşturma sayfası | Faz 2'de `/anket/olustur/` giriş gerektiren geçici bir "yakında" sayfasıdır (header linki ve giriş yönlendirmesi test edilebilsin diye). Faz 3'te gerçek formla değiştirilir. |
+| 20 | Seçenek alanı (Faz 3) | Oluşturma formundaki 5 kutu tek bir `name="options"` ile gönderilir (`polls/forms.py::OptionListField`). Böylece 6 seçenekli kurcalanmış gönderim de yakalanır; `option_1..5` gibi ayrı alanlarda 6. değer sessizce yok sayılırdı. |
+| 21 | "Daha fazla göster" | JS'siz basit link: `?sekme=<sekme>&page=<n+1>`, sonraki 20 anket yeni sayfada açılır. Sorgu 21 kayıt çeker, ayrı `COUNT` atılmaz. |
+| 22 | Popüler sekmesi kapsamı | Sadece son 7 günde en az 1 oy almış açık anketler listelenir; yoksa boş durum gösterilir. |
+| 23 | Yüzdeler ve rozetler (Faz 3) | Yüzde yuvarlama (Faz 4 görev 7) öne alındı: `polls/results.py::percentages` yarım yukarı yuvarlar, sapmayı en büyük seçenek emer. Kapalı ve hiç oy almamış ankette rozet "Oy verilmeden kapandı" der. Görünürlük Faz 3'te: kapalı anket veya sahibi; "oy verdiyse" Faz 4'te eklenir. |
+| 24 | Kart hover'ı | Kartın hover'daki gölge ve 2px kayması geçişsiz (anlık) uygulanır; Bölüm 7 "çubuklar ve buton hover'ları dışında animasyon yok" kuralı korunur. |

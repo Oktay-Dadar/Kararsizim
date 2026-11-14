@@ -1,0 +1,5 @@
+<article class="poll-card">
+  {% include "partials/decision_bar.html" %}
+  <h2 class="poll-card__question"><a href="{{ view.poll.get_absolute_url }}">{{ view.poll.question }}</a></h2>
+  {% include "partials/poll_meta.html" %}
+</article>

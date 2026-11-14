@@ -29,6 +29,10 @@ a {
   color: var(--violet);
 }
 
+[hidden] {
+  display: none !important;
+}
+
 :focus-visible {
   outline: 3px solid var(--sun);
   outline-offset: 2px;

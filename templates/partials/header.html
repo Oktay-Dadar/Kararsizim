@@ -2,7 +2,7 @@
   <a class="site-logo" href="{% url 'polls:index' %}">Kararsızım</a>
   <nav class="site-nav" aria-label="Hesap">
     {% if user.is_authenticated %}
-      <span class="site-nav__user">@{{ user.username }}</span>
+      <a class="site-nav__user" href="{% url 'polls:profile' user.username %}">@{{ user.username }}</a>
       <a class="btn btn-primary" href="{% url 'polls:create' %}">Anket oluştur</a>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}

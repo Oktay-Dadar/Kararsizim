@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ view.poll.question }} · Kararsızım{% endblock %}
+
+{% block content %}
+  <article class="poll-detail">
+    {% include "partials/decision_bar.html" %}
+    <h1 class="poll-detail__question">{{ view.poll.question }}</h1>
+    {% if view.poll.description %}<p class="poll-detail__description">{{ view.poll.description }}</p>{% endif %}
+    {% include "partials/poll_meta.html" %}
+
+    <div class="poll-detail__results" aria-live="polite">
+      <ul class="option-list">
+        {% for option in view.options %}{% include "partials/option_row.html" %}{% endfor %}
+      </ul>
+      {% if not view.results_visible %}
+        <p class="poll-detail__hint">Yüzdeler oy verdikten sonra görünür.</p>
+      {% endif %}
+    </div>
+  </article>
+{% endblock %}
