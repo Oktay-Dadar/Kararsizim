@@ -64,9 +64,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+# Migrations must go through the session pooler (DATABASE_URL_DIRECT); see docs/PROJECT.md §11.1.
+DATABASE_URL_ENV = "DATABASE_URL_DIRECT" if env_bool("DJANGO_DB_DIRECT") else "DATABASE_URL"
+
 DATABASES = {
     "default": dj_database_url.parse(
-        os.environ.get("DATABASE_URL") or f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        os.environ.get(DATABASE_URL_ENV) or f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=0,
     )
 }
@@ -74,7 +77,11 @@ DATABASES = {
 # Supabase transaction pooler does not support server-side cursors or prepared statements.
 if DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-    DATABASES["default"].setdefault("OPTIONS", {})["prepare_threshold"] = None
+    db_options = DATABASES["default"].setdefault("OPTIONS", {})
+    db_options["prepare_threshold"] = None
+    db_options.setdefault("sslmode", "require")
+
+AUTH_USER_MODEL = "accounts.User"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
