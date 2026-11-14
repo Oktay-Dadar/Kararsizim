@@ -5,7 +5,7 @@ from django.db.models import Count, Q, Sum
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from .models import Poll
+from .models import Poll, Vote
 
 PAGE_SIZE = 20
 POPULAR_WINDOW = timedelta(days=7)
@@ -52,6 +52,30 @@ def feed(tab, page=1):
 
 def get_poll_or_404(public_id):
     return get_object_or_404(_with_card_data(Poll.objects.all()), public_id=public_id)
+
+
+def _voter_q(user, voter_key):
+    """Votes cast by this account, or from this browser session (even before logging in)."""
+    condition = Q()
+    if user is not None and user.is_authenticated:
+        condition |= Q(user=user)
+    if voter_key:
+        condition |= Q(voter_key=voter_key)
+    return condition
+
+
+def has_voted(poll, user, voter_key):
+    condition = _voter_q(user, voter_key)
+    return bool(condition) and Vote.objects.filter(condition, poll=poll).exists()
+
+
+def voted_options(polls, user, voter_key):
+    """{poll_id: option_id} for the given polls, in a single query."""
+    poll_ids = [poll.pk for poll in polls]
+    condition = _voter_q(user, voter_key)
+    if not poll_ids or not condition:
+        return {}
+    return dict(Vote.objects.filter(condition, poll_id__in=poll_ids).values_list("poll_id", "option_id"))
 
 
 def polls_created_since(user, since):

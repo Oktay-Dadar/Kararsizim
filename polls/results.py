@@ -22,6 +22,7 @@ class OptionResult:
     position: int
     count: int | None
     percent: int | None
+    voted: bool
 
 
 @dataclass(frozen=True)
@@ -29,6 +30,8 @@ class PollView:
     poll: object
     results_visible: bool
     real_bar: bool
+    can_vote: bool
+    voted_option_id: int | None
     segments: list
     options: list
     badge_text: str
@@ -59,19 +62,19 @@ def badge_for(percents):
     return BADGE_CLEAR, "clear"
 
 
-def can_see_results(poll, viewer, voted_poll_ids=frozenset()):
-    if not poll.is_open:
+def can_see_results(poll, viewer, voted_option_id=None):
+    if not poll.is_open or voted_option_id is not None:
         return True
-    if getattr(viewer, "is_authenticated", False) and viewer.pk == poll.author_id:
-        return True
-    return poll.pk in voted_poll_ids
+    return bool(getattr(viewer, "is_authenticated", False) and viewer.pk == poll.author_id)
 
 
-def build_poll_view(poll, viewer, voted_poll_ids=frozenset()):
+def build_poll_view(poll, viewer, voted_options=None):
+    """voted_options: {poll_id: option_id} from selectors.voted_options()."""
+    voted_option_id = (voted_options or {}).get(poll.pk)
     options = list(poll.options.all())
     counts = [option.vote_count for option in options]
     total = sum(counts)
-    visible = can_see_results(poll, viewer, voted_poll_ids)
+    visible = can_see_results(poll, viewer, voted_option_id)
     percents = percentages(counts)
 
     if total and visible:
@@ -94,6 +97,7 @@ def build_poll_view(poll, viewer, voted_poll_ids=frozenset()):
             position=o.position,
             count=o.vote_count if visible else None,
             percent=p if visible else None,
+            voted=o.pk == voted_option_id,
         )
         for o, p in zip(options, percents)
     ]
@@ -101,6 +105,8 @@ def build_poll_view(poll, viewer, voted_poll_ids=frozenset()):
         poll=poll,
         results_visible=visible,
         real_bar=bool(total and visible),
+        can_vote=poll.is_open and voted_option_id is None,
+        voted_option_id=voted_option_id,
         segments=segments,
         options=option_results,
         badge_text=badge_text,
@@ -109,5 +115,20 @@ def build_poll_view(poll, viewer, voted_poll_ids=frozenset()):
     )
 
 
-def build_poll_views(polls, viewer, voted_poll_ids=frozenset()):
-    return [build_poll_view(poll, viewer, voted_poll_ids) for poll in polls]
+def build_poll_views(polls, viewer, voted_options=None):
+    return [build_poll_view(poll, viewer, voted_options) for poll in polls]
+
+
+def results_payload(view):
+    """Public JSON for /anket/<id>/sonuc/ and vote responses. Never includes user data."""
+    return {
+        "total": view.poll.total_votes,
+        "options": [
+            {"id": o.id, "text": o.text, "position": o.position, "count": o.count, "percent": o.percent}
+            for o in view.options
+        ],
+        "voted_option_id": view.voted_option_id,
+        "is_open": view.poll.is_open,
+        "results_visible": view.results_visible,
+        "badge": {"text": view.badge_text, "kind": view.badge_kind},
+    }

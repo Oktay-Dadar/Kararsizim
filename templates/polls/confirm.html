@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} · Kararsızım{% endblock %}
+
+{% block content %}
+  <section class="auth-card">
+    <h1 class="auth-card__title">{{ title }}</h1>
+    <p class="confirm__question">“{{ poll.question }}”</p>
+    <p class="auth-card__lead">{{ message }}</p>
+    <form method="post" class="confirm__actions">
+      {% csrf_token %}
+      <button class="btn {{ confirm_class }}" type="submit">{{ confirm_label }}</button>
+      <a class="btn btn-secondary" href="{{ poll.get_absolute_url }}">Vazgeç</a>
+    </form>
+  </section>
+{% endblock %}

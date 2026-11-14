@@ -1,5 +1,12 @@
-<li class="option-row opt-{{ option.position }}{% if option.percent is not None %} option-row--result{% endif %}">
+<li class="option-row opt-{{ option.position }}{% if option.percent is not None %} option-row--result{% endif %}{% if option.voted %} option-row--voted{% endif %}{% if choice %} option-row--choice{% endif %}">
   {% if option.percent is not None %}<span class="option-row__fill" style="width: {{ option.percent }}%"></span>{% endif %}
-  <span class="option-row__text">{{ option.text }}</span>
+  {% if choice %}
+    <label class="option-row__choice">
+      <input type="radio" name="option" value="{{ option.id }}"{% if disabled %} disabled{% endif %}>
+      <span class="option-row__text">{{ option.text }}</span>
+    </label>
+  {% else %}
+    <span class="option-row__text">{{ option.text }}{% if option.voted %} <span class="option-row__check">✓<span class="visually-hidden"> (senin oyun)</span></span>{% endif %}</span>
+  {% endif %}
   {% if option.percent is not None %}<span class="option-row__percent">%{{ option.percent }}</span>{% endif %}
 </li>

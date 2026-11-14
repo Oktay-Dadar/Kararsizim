@@ -1,21 +1,51 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ view.poll.question }} · Kararsızım{% endblock %}
 
 {% block content %}
-  <article class="poll-detail">
+  <article class="poll-detail" data-poll>
     {% include "partials/decision_bar.html" %}
     <h1 class="poll-detail__question">{{ view.poll.question }}</h1>
     {% if view.poll.description %}<p class="poll-detail__description">{{ view.poll.description }}</p>{% endif %}
     {% include "partials/poll_meta.html" %}
 
-    <div class="poll-detail__results" aria-live="polite">
-      <ul class="option-list">
-        {% for option in view.options %}{% include "partials/option_row.html" %}{% endfor %}
-      </ul>
-      {% if not view.results_visible %}
-        <p class="poll-detail__hint">Yüzdeler oy verdikten sonra görünür.</p>
+    <div class="poll-detail__results" aria-live="polite" tabindex="-1" data-results>
+      {% if view.can_vote %}
+        <form class="vote-form" method="post" action="{% url 'polls:vote' view.poll.public_id %}" novalidate data-vote-form>
+          {% csrf_token %}
+          <fieldset class="vote-form__fieldset">
+            <legend class="visually-hidden">Bir seçenek işaretle</legend>
+            <ul class="option-list">
+              {% for option in view.options %}{% include "partials/option_row.html" with choice=True %}{% endfor %}
+            </ul>
+          </fieldset>
+          <button class="btn btn-primary btn-block" type="submit">Oy ver</button>
+        </form>
+      {% elif not view.poll.is_open and view.voted_option_id is None %}
+        <ul class="option-list">
+          {% for option in view.options %}{% include "partials/option_row.html" with choice=True disabled=True %}{% endfor %}
+        </ul>
+        <button class="btn btn-primary btn-block vote-form__closed" type="button" disabled>Oy ver</button>
+      {% else %}
+        <ul class="option-list">
+          {% for option in view.options %}{% include "partials/option_row.html" %}{% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if not view.poll.is_open %}
+        <p class="poll-detail__hint">Bu anket kapandı.</p>
+      {% elif not view.results_visible %}
+        <p class="poll-detail__hint" data-results-hint>Yüzdeler oy verdikten sonra görünür.</p>
       {% endif %}
     </div>
+
+    {% if user.is_authenticated and user.pk == view.poll.author_id %}
+      <div class="owner-actions">
+        {% if view.poll.is_open %}<a class="btn btn-secondary" href="{% url 'polls:close' view.poll.public_id %}">Anketi kapat</a>{% endif %}
+        <a class="btn btn-secondary" href="{% url 'polls:delete' view.poll.public_id %}">Anketi sil</a>
+      </div>
+    {% endif %}
   </article>
+  {% if view.can_vote %}<script src="{% static 'js/vote.js' %}" defer></script>{% endif %}
 {% endblock %}
