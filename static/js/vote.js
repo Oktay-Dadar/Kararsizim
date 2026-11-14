@@ -15,7 +15,7 @@
       return;
     }
 
-    submitButton.disabled = true;
+    setBusy(true);
     let response;
     let data;
     try {
@@ -32,7 +32,7 @@
       data = await response.json();
     } catch (error) {
       toast("Bağlantı kurulamadı. Tekrar dene.");
-      submitButton.disabled = false;
+      setBusy(false);
       return;
     }
 
@@ -40,9 +40,15 @@
     if (data.results_visible) {
       showResults(data);
     } else {
-      submitButton.disabled = false;
+      setBusy(false);
     }
   });
+
+  function setBusy(busy) {
+    submitButton.disabled = busy;
+    submitButton.textContent = busy ? "Kaydediliyor…" : "Oy ver";
+    form.setAttribute("aria-busy", String(busy));
+  }
 
   function showResults(data) {
     const list = document.createElement("ul");
@@ -114,6 +120,13 @@
   function updateTotal(total) {
     const element = poll.querySelector("[data-total-votes]");
     if (!element) return;
-    element.textContent = total ? `${total.toLocaleString("tr-TR")} kişi oy verdi` : "Henüz oy yok";
+    if (!total) {
+      element.textContent = "Henüz oy yok";
+      return;
+    }
+    const number = document.createElement("span");
+    number.className = "num";
+    number.textContent = total.toLocaleString("tr-TR");
+    element.replaceChildren(number, " kişi oy verdi");
   }
 })();

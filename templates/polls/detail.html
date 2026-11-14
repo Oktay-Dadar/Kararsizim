@@ -2,6 +2,9 @@
 {% load static %}
 
 {% block title %}{{ view.poll.question }} · Kararsızım{% endblock %}
+{% block og_title %}{{ view.poll.question }}{% endblock %}
+{% block og_description %}{% if view.poll.total_votes %}{{ view.poll.total_votes }} kişi oy verdi. Sen de oy ver.{% else %}İlk oyu sen ver.{% endif %} · Kararsızım{% endblock %}
+{% block meta_description %}{% if view.poll.description %}{{ view.poll.description }}{% else %}{{ view.poll.question }} Kalabalık oyluyor, sen de katıl.{% endif %}{% endblock %}
 
 {% block content %}
   <article class="poll-detail" data-poll>

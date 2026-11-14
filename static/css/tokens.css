@@ -28,6 +28,11 @@
   --shadow-sm: 0 2px 8px rgba(91, 61, 245, 0.08);
   --shadow-md: 0 8px 24px rgba(91, 61, 245, 0.12);
 
+  /* yazı aileleri (static/css/fonts.css) */
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, Consolas, monospace;
+
   /* biçim */
   --radius-card: 20px;
   --radius-pill: 999px;

@@ -3,6 +3,6 @@
   <span aria-hidden="true">·</span>
   <time datetime="{{ view.poll.created_at|date:'c' }}">{{ view.poll.created_at|naturaltime }}</time>
   <span aria-hidden="true">·</span>
-  <span data-total-votes>{% if view.poll.total_votes %}{{ view.poll.total_votes|intcomma }} kişi oy verdi{% else %}Henüz oy yok{% endif %}</span>
+  <span data-total-votes>{% if view.poll.total_votes %}<span class="num">{{ view.poll.total_votes|intcomma }}</span> kişi oy verdi{% else %}Henüz oy yok{% endif %}</span>
   {% if not view.poll.is_open %}<span class="poll-meta__status">Kapandı</span>{% endif %}
 </p>

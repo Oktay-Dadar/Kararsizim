@@ -1,7 +1,7 @@
 /* header */
 .site-header {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
@@ -11,35 +11,142 @@
 }
 
 .site-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  font-family: var(--font-display);
   font-size: 20px;
   font-weight: 800;
   color: var(--ink);
   text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-logo__mark {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Below 420px only the mark fits next to two buttons; the name stays readable to screen readers. */
+@media (max-width: 419px) {
+  .site-logo__text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 }
 
 .site-nav {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-2);
 }
 
-.site-nav form {
+/* account menu (<details>, works without JS) */
+.account-menu {
+  position: relative;
+}
+
+.account-menu__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 var(--sp-1);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.account-menu__trigger::-webkit-details-marker {
+  display: none;
+}
+
+.account-menu__trigger:hover {
+  background: var(--line);
+}
+
+.account-menu__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+
+/* Visually hidden on phones but still the menu's accessible name. */
+.account-menu__name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .account-menu__name {
+    position: static;
+    width: auto;
+    height: auto;
+    max-width: 180px;
+    clip: auto;
+    text-overflow: ellipsis;
+  }
+
+  .account-menu__trigger {
+    padding-right: var(--sp-3);
+  }
+}
+
+.account-menu__panel {
+  position: absolute;
+  top: calc(100% + var(--sp-2));
+  right: 0;
+  z-index: 5;
+  min-width: 180px;
+  padding: var(--sp-2);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  box-shadow: var(--shadow-md);
+}
+
+.account-menu__panel form {
   margin: 0;
 }
 
-.site-nav__user {
-  display: inline-flex;
+.account-menu__item {
+  display: flex;
   align-items: center;
+  width: 100%;
   min-height: 44px;
-  font-weight: 600;
-  color: var(--muted);
+  padding: 0 var(--sp-3);
+  border: 0;
+  border-radius: var(--sp-2);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
   text-decoration: none;
-  overflow-wrap: anywhere;
+  cursor: pointer;
 }
 
-.site-nav__user:hover {
-  color: var(--ink);
+.account-menu__item:hover {
+  background: var(--line);
 }
 
 /* buttons */
@@ -54,6 +161,7 @@
   font: inherit;
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
   transition: background-color 150ms ease, box-shadow 150ms ease;
 }
@@ -80,6 +188,12 @@
 
 .btn-block {
   width: 100%;
+}
+
+@media (max-width: 479px) {
+  .site-nav .btn {
+    padding: 0 var(--sp-4);
+  }
 }
 
 .btn:disabled {
@@ -226,6 +340,13 @@
 .page-title {
   font-size: 26px;
   margin-bottom: var(--sp-5);
+}
+
+@media (min-width: 768px) {
+  .page-title,
+  .poll-detail__question {
+    font-size: 34px;
+  }
 }
 
 .tabs {
@@ -431,7 +552,7 @@
 }
 
 .option-row__percent {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
@@ -458,7 +579,7 @@
 
 .profile-stats dd {
   margin: 0;
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 20px;
   font-weight: 500;
 }
@@ -608,8 +729,10 @@
   font-weight: 800;
 }
 
+/* Focused by vote.js so screen readers land on the results; no visible ring needed. */
 .poll-detail__results:focus {
   outline: none;
+  box-shadow: none;
 }
 
 /* owner actions + confirm */
@@ -653,4 +776,27 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* error pages */
+.error-page {
+  max-width: 480px;
+  margin: var(--sp-7) auto 0;
+  text-align: center;
+}
+
+.error-page__code {
+  margin: 0;
+  font-size: 44px;
+  color: var(--violet);
+}
+
+.error-page__title {
+  margin: var(--sp-2) 0;
+  font-size: 26px;
+}
+
+.error-page__text {
+  margin: 0 0 var(--sp-5);
+  color: var(--muted);
 }

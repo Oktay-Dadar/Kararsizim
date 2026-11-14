@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Sayfa bulunamadı · Kararsızım{% endblock %}
+
+{% block content %}
+  <section class="error-page">
+    <p class="error-page__code num" aria-hidden="true">404</p>
+    <h1 class="error-page__title">Aradığın sayfa yok.</h1>
+    <p class="error-page__text">Anket silinmiş ya da adres yanlış yazılmış olabilir.</p>
+    <a class="btn btn-primary" href="{% url 'polls:index' %}">Ana sayfaya dön</a>
+  </section>
+{% endblock %}

@@ -186,7 +186,7 @@ class ResultVisibilityTests(TestCase):
         response = self.client.get(self.poll.get_absolute_url())
         self.assertNotContains(response, "option-row__percent")
         self.assertContains(response, "Oy ver, kalabalığı gör")
-        self.assertContains(response, "6 kişi oy verdi")
+        self.assertContains(response, "<span class=\"num\">6</span> kişi oy verdi")
         feed = self.client.get(reverse("polls:index"))
         self.assertNotContains(feed, "Sinema %")
 

@@ -1,0 +1,30 @@
+{% load static %}<!doctype html>
+{% comment %}Rendered without a request or database access; keep it standalone.{% endcomment %}
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bir şeyler ters gitti · Kararsızım</title>
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-logo" href="/">
+      <img class="site-logo__mark" src="{% static 'img/logo.svg' %}" alt="" width="28" height="28">
+      <span>Kararsızım</span>
+    </a>
+  </header>
+  <main id="main">
+    <section class="error-page">
+      <p class="error-page__code num" aria-hidden="true">500</p>
+      <h1 class="error-page__title">Bir şeyler ters gitti.</h1>
+      <p class="error-page__text">Sorun bizde. Birkaç dakika sonra tekrar dene.</p>
+      <a class="btn btn-primary" href="/">Ana sayfaya dön</a>
+    </section>
+  </main>
+</body>
+</html>
