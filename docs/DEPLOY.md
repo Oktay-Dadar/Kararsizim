@@ -1,6 +1,8 @@
 # Kararsızım — Deployment
 
-Canlı ortam: **Vercel** (proje `kararsizim`, bölge `fra1`) + **Supabase** Postgres (proje ref `blqgpmyvrankosvzxknj`, `eu-central-1`).
+Canlı adres: **https://kararsizim-two.vercel.app** (`kararsizim.vercel.app` başka bir projeye ait).
+
+Canlı ortam: **Vercel** (takım `oktaydadar-rgbs-projects`, proje `kararsizim`, bölge `fra1`) + **Supabase** Postgres (proje ref `blqgpmyvrankosvzxknj`, `eu-central-1`).
 Kararların gerekçeleri: `docs/PROJECT.md` Bölüm 11 ve 15.
 
 ## Nasıl deploy olur
@@ -10,7 +12,14 @@ Kararların gerekçeleri: `docs/PROJECT.md` Bölüm 11 ve 15.
 - Python sürümü `.python-version` (3.14), bölge `vercel.json` (`fra1`, Supabase'e yakın). Pakete girmeyecek dosyalar `.vercelignore`'da.
 - Migration'lar build'de **çalışmaz**; aşağıdaki gibi yerelden çalıştırılır. Model değişikliği içeren bir push'tan **önce** migration'ı uygula.
 
-## Ortam değişkenleri (Vercel → Settings → Environment Variables, yalnızca **Production**)
+## İlk kurulumda yaşananlar
+
+- Vercel'in GitHub uygulaması "Only select repositories" modundaysa repo Import listesinde görünmez: https://github.com/settings/installations → Vercel → Configure → Kararsizim'i ekle.
+- Değişkenler girilmeden yapılan build `DJANGO_SETTINGS_FAILED` ile kırılır (settings `KeyError: 'DJANGO_SECRET_KEY'`). Değişkenleri ekleyip Redeploy yeterli.
+
+## Ortam değişkenleri (Vercel → Settings → Environments → Production, yalnızca **Production**)
+
+Gizli olanlar **Secret** türüyle (kaydedildikten sonra okunamaz), `DJANGO_DEBUG` **Config** türüyle girilir.
 
 | Değişken | Değer | Not |
 |---|---|---|
@@ -65,5 +74,6 @@ Remove-Item Env:DJANGO_DEBUG, Env:DJANGO_SECURE_SSL_REDIRECT
 
 ## Supabase güvenliği
 
-- Data API kapalıdır (Supabase → Settings → API). Yedek önlem: `polls/migrations/0002_lock_down_supabase_api.py` (RLS açık, `anon`/`authenticated` yetkisiz).
+- Data API kapalı olmalıdır (Supabase → Settings → API). Kontrol (publishable anahtar herkese açıktır, Supabase → Settings → API Keys):
+  `curl -H "apikey: <PUBLISHABLE>" -H "Authorization: Bearer <PUBLISHABLE>" https://blqgpmyvrankosvzxknj.supabase.co/rest/v1/polls_poll?limit=1` — hiçbir durumda satır dönmemeli. Yedek önlem: `polls/migrations/0002_lock_down_supabase_api.py` (RLS açık, `anon`/`authenticated` yetkisiz).
 - Doğrudan bağlantı (`db.<ref>.supabase.co`) yalnızca IPv6'dır; Vercel'den çalışmaz. Her zaman pooler adresi.
